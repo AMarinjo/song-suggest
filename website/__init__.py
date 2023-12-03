@@ -6,6 +6,7 @@ GROUP 12 Project
 
 from flask import Flask
 from .views import views
+from .models import PostgresModel, Neo4jModel
 
 
 def create_app():
@@ -18,5 +19,10 @@ def create_app():
     app.config["SECRET_KEY"] = "This is super secret.."
 
     app.register_blueprint(views, url_prefix="/")
+
+    postgres = PostgresModel()
+    neo4j = Neo4jModel()
+
+    postgres.create_table()
 
     return app
