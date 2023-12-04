@@ -14,9 +14,12 @@ git clone <repo-url>
 pip install -r requirements.txt
 ```
 
+## Postgres Setup
 Make sure you set up the credentials.txt and database.ini files locally to 
 connect to your Postgres database. By looking at these files you will see the 
 username and password need to be entered to login into the database correctly.
+Likewise, make sure your have access to the database prior to running the 
+application.
 
 To set these files up please create the following:
 
@@ -41,6 +44,8 @@ The credential.txt file needs to look as follows:
 mdb_studentxx
 password123
 ```
+
+## Neo4j Setup
 
 ## Running The App
 ```bash
