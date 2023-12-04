@@ -18,7 +18,7 @@ pip install -r requirements.txt
 Make sure you set up the credentials.txt and database.ini files locally to 
 connect to your Postgres database. By looking at these files you will see the 
 username and password need to be entered to login into the database correctly.
-Likewise, make sure your have access to the database prior to running the 
+Likewise, make sure you have access to the database before running the 
 application.
 
 To set these files up please create the following:
@@ -46,6 +46,11 @@ password123
 ```
 
 ## Neo4j Setup
+For the Neo4j setup, ensure you have created a database to work with while also
+grabbing the .csv file from the project and adding it to the import folder of the
+Neo4j database. 
+
+Follow this link [here](https://neo4j.com/developer/desktop-csv-import/) for more information.
 
 ## Running The App
 ```bash
