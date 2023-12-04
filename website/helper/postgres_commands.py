@@ -7,7 +7,11 @@ GROUP 12 Project
 
 def create_table(table_name):
     """Simple method that returns the necessary commands for creating the appropriate
-    table for the dataset used within the project"""
+    table for the dataset used within the project
+
+    Args:
+        table_name (str): Table name used within database
+    """
 
     table_schema = f"""
     CREATE TABLE IF NOT EXISTS {table_name} (
@@ -39,8 +43,11 @@ def create_table(table_name):
 
 
 def check_table_available(table_name):
-    """Simple method to check whether or not the table being added is available
-    or not"""
+    """Simple method to check whether or not the table being added is available or not
+
+    Args:
+        table_name (str): Table name used within database
+    """
 
     table_available = f"""
     SELECT EXISTS (SELECT 1 FROM information_schema.tables 

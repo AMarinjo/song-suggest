@@ -27,10 +27,8 @@ def config(filename="database.ini", section="postgresql"):
     file_path = base_dir + "\\helper\\" + filename
 
     parser = ConfigParser()
-    # read config file
     parser.read(file_path)
 
-    # get section, default to postgresql
     db = {}
     if parser.has_section(section):
         params = parser.items(section)

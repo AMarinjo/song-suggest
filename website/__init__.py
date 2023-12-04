@@ -24,5 +24,6 @@ def create_app():
     neo4j = Neo4jModel()
 
     postgres.create_table()
+    neo4j.create_table()
 
     return app

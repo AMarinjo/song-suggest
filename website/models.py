@@ -5,12 +5,13 @@ GROUP 12 Project
 """
 
 import os
+from urllib.parse import quote
 import psycopg2
 from psycopg2 import sql
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from neo4j import GraphDatabase
 from .helper.postgres_commands import *
 from .helper.postgres_config import config, credentials
+from .helper.neo4j_commands import *
 
 
 class Neo4jModel:
@@ -18,7 +19,9 @@ class Neo4jModel:
     Neo4jModel class, addressed Neo4j commands needed within application
     """
 
-    def __init__(self, url="bolt://localhost:7687", username="neo4j", password="neo4j"):
+    def __init__(
+        self, url="bolt://localhost:7687", username="neo4j", password="password"
+    ):
         """Initializes the Neo4j object
 
         Args:
@@ -27,10 +30,36 @@ class Neo4jModel:
             username (str, optional): Username of the database that needs to be
             connected to. Defaults to "neo4j".
             password (str, optional): Password of the database that needs to be
-            connected to. Defaults to "neo4j".
+            connected to. Defaults to "password".
         """
         self.url = url
         self.driver = GraphDatabase.driver(url, auth=(username, password))
+
+    def create_table(self, table_name="Song", csv_file="dataset.csv"):
+        """Creates and populates the neo4j with the included .csv file
+
+        Args:
+            table_name (str, optional): The name of the table created. Defaults
+            to "Songs".
+            csv_file_path (str, optional): The .csv file path for dataset used.
+            Defaults to "dataset.csv".
+        """
+        comparison_value = "210JCw2LbYD4YIs8GiZ9iP"
+
+        with self.driver.session() as session:
+            result = session.run(
+                check_node_available(table_name, "track_id"), value=comparison_value
+            )
+            node_count = result.single()["count"]
+
+        if node_count > 0:
+            print(
+                f""" * Value {comparison_value} already exists in Neo4j database. 
+                Data already imported."""
+            )
+        else:
+            with self.driver.session() as session:
+                session.run(create_nodes(csv_file))
 
     def close(self):
         """Closes the Neo4j database connection"""
@@ -63,10 +92,9 @@ class PostgresModel:
         table_exists = cursor.fetchone()[0]
 
         if table_exists:
-            print(f" * Table {table_name} already exists.")
+            print(f" * Table {table_name} already exists in Postgres database.")
         else:
             cursor.execute(create_table(table_name))
-
             base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             csv_file_path = base_dir + "\\website\\helper\\" + csv_file
 
