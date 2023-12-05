@@ -26,4 +26,6 @@ def create_app():
     postgres.create_table()
     # neo4j.create_table()
 
+    postgres.close()
+
     return app

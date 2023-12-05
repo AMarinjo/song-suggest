@@ -3,11 +3,32 @@
     <h1 align="center">SongSuggest</h1>
     <ul class="list-group list-group-flush" id="notes">
     </ul>
-    <form method="POST">
-      <textarea name="note" id="note" class="form-control"></textarea>
-      <br />
+    <br>
+    <form method="GET" action="{{ url_for('views.search') }}">
+      <div align="center">
+      <label for="query">Search:</label>
+      <input type="text" id="query" name="query" required>
+      </div>
       <div align="center">
         <button type="submit" class="btn btn-primary">Search</button>
       </div>
     </form>
+
+    {% if results %}
+        <h3>Search Results for "{{ query }}"</h2>
+        <table>
+          <tr>
+              <th>Track Name</th>
+              <th>Artist Name</th>
+          </tr>
+          {% for result in results %}
+              <tr>
+                  <td>{{ result[0] }}</td>
+                  <td>{{ result[1] }}</td>
+              </tr>
+          {% endfor %}
+        </table>
+    {% elif query %}
+        <p>No results found for "{{ query }}".</p>
+    {% endif %}
     {% endblock %}

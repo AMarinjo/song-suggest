@@ -105,6 +105,25 @@ class PostgresModel:
 
             self.connection.commit()
 
+        cursor.close()
+
+    def search(self, search_value):
+        """Method for searching the postgres database
+
+        Args:
+            search_value (str, optional): Value searched for in application
+        """
+        cursor = self.connection.cursor()
+
+        cursor.execute(
+            "SELECT track_name, artists FROM songs WHERE track_name ILIKE %s",
+            ("%" + search_value + "%",),
+        )
+        results = cursor.fetchall()
+        cursor.close()
+
+        return results
+
     def close(self):
         """Closes the Postgres database connection"""
         self.connection.close()
