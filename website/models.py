@@ -35,12 +35,10 @@ class Neo4jModel:
         self.url = url
         self.driver = GraphDatabase.driver(url, auth=(username, password))
 
-    def create_table(self, table_name="Song", csv_file="dataset.csv"):
+    def create_table(self, csv_file="dataset.csv"):
         """Creates and populates the neo4j with the included .csv file
 
         Args:
-            table_name (str, optional): The name of the table created. Defaults
-            to "Songs".
             csv_file_path (str, optional): The .csv file path for dataset used.
             Defaults to "dataset.csv".
         """
@@ -48,18 +46,24 @@ class Neo4jModel:
 
         with self.driver.session() as session:
             result = session.run(
-                check_node_available(table_name, "track_id"), value=comparison_value
+                check_node_available("Song", "track_id"), value=comparison_value
             )
             node_count = result.single()["count"]
 
         if node_count > 0:
             print(
-                f""" * Value {comparison_value} already exists in Neo4j database. 
-                Data already imported."""
+                f""" * Value {comparison_value} already exists in Neo4j database. """
+                + """Data already imported."""
             )
         else:
             with self.driver.session() as session:
-                session.run(create_nodes(csv_file))
+                session.run(create_song(csv_file))
+                session.run(create_artist(csv_file))
+                session.run(create_album(csv_file))
+                session.run(create_genre(csv_file))
+                session.run(create_artist_album())
+                session.run(create_artist_song())
+                session.run(create_song_genre())
 
     def close(self):
         """Closes the Neo4j database connection"""

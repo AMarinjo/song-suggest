@@ -5,7 +5,7 @@ GROUP 12 Project
 """
 
 
-def create_nodes(csv_file_path):
+def create_song(csv_file_path):
     """Simple method that returns the necessary commands for creating the appropriate
     nodes for the dataset used within the project
 
@@ -13,9 +13,9 @@ def create_nodes(csv_file_path):
         csv_file_path (str): String containing the csv file path
     """
 
-    song_nodes = f"""
+    song = f"""
         LOAD CSV WITH HEADERS FROM 'file:///{csv_file_path}' AS row
-        MERGE (s:Song {{
+        CREATE (s:Song {{
             id: toInteger(row.id),
             track_id: row.track_id,
             artists: row.artists,
@@ -23,7 +23,7 @@ def create_nodes(csv_file_path):
             track_name: row.track_name,
             popularity: toInteger(row.popularity),
             duration_ms: toInteger(row.duration_ms),
-            explicit: row.explicit = 'True',
+            explicit: toBoolean(row.explicit),
             danceability: toFloat(row.danceability),
             energy: toFloat(row.energy),
             key: toInteger(row.key),
@@ -37,11 +37,107 @@ def create_nodes(csv_file_path):
             tempo: toFloat(row.tempo),
             time_signature: toInteger(row.time_signature),
             track_genre: row.track_genre
-        }}) WITH s, row
-        RETURN COUNT(s)
+        }})
         """
-    print(song_nodes)
-    return song_nodes
+
+    return song
+
+
+def create_artist(csv_file_path):
+    """Simple method that returns the necessary commands for creating the appropriate
+    nodes for the dataset used within the project
+
+    Args:
+        csv_file_path (str): String containing the csv file path
+    """
+
+    artist = f"""
+        LOAD CSV WITH HEADERS FROM 'file:///{csv_file_path}' AS row
+        UNWIND row.artists AS artist
+        WITH DISTINCT artist
+        CREATE (:Artist {{name:artist}})
+        """
+
+    return artist
+
+
+def create_album(csv_file_path):
+    """Simple method that returns the necessary commands for creating the appropriate
+    nodes for the dataset used within the project
+
+    Args:
+        csv_file_path (str): String containing the csv file path
+    """
+
+    album = f"""
+        LOAD CSV WITH HEADERS FROM 'file:///{csv_file_path}' AS row
+        UNWIND row.album_name AS album
+        WITH DISTINCT album
+        CREATE (:Album {{name:album}})
+        """
+
+    return album
+
+
+def create_genre(csv_file_path):
+    """Simple method that returns the necessary commands for creating the appropriate
+    nodes for the dataset used within the project
+
+    Args:
+        csv_file_path (str): String containing the csv file path
+    """
+
+    genre = f"""
+        LOAD CSV WITH HEADERS FROM 'file:///{csv_file_path}' AS row
+        UNWIND row.track_genre AS genre
+        WITH DISTINCT genre
+        CREATE (:Genre {{name:genre}})
+        """
+
+    return genre
+
+
+def create_artist_album():
+    """Simple method that returns the necessary commands for creating the appropriate
+    relations for the dataset used within the project
+    """
+
+    artist_album = """
+        MATCH (song: Song)
+        MATCH (artists: Artist {name: song.artists})
+        MATCH (album: Album {name: song.album_name})
+        CREATE (artists)-[:ARTIST_MADE_ALBUM]->(album)
+        """
+
+    return artist_album
+
+
+def create_artist_song():
+    """Simple method that returns the necessary commands for creating the appropriate
+    relations for the dataset used within the project
+    """
+
+    artist_song = """
+        MATCH (song: Song)
+        MATCH (album: Album {name: song.album_name})
+        CREATE (album)-[:ALBUM_HAS_TRACK]->(song)
+        """
+
+    return artist_song
+
+
+def create_song_genre():
+    """Simple method that returns the necessary commands for creating the appropriate
+    relations for the dataset used within the project
+    """
+
+    song_genre = """
+        MATCH (song: Song)
+        MATCH (genre: Genre {name: song.track_genre})
+        CREATE (song)-[:IN_GENRE]->(genre)
+        """
+
+    return song_genre
 
 
 def check_node_available(label, neo_property):
