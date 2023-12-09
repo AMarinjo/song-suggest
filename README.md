@@ -70,3 +70,23 @@ CREATE INDEX idx_artists_trgm ON songs USING GIN (artists gin_trgm_ops)
 ```bash
 CREATE INDEX idx_track_name_trgm ON songs USING GIN (track_name gin_trgm_ops)
 ```
+
+```bash
+CREATE UNIQUE INDEX songs_pkey ON songs USING btree (_id)
+```
+
+```bash
+CREATE INDEX idx_acousticness ON songs USING btree (acousticness)
+```
+
+```bash
+CREATE INDEX idx_danceability ON songs USING btree (danceability)
+```
+
+```bash
+CREATE INDEX idx_liveness ON songs USING btree (liveness)
+```
+
+```bash
+CREATE INDEX idx_songid ON songs USING btree (track_id)
+```
