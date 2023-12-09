@@ -72,10 +72,6 @@ CREATE INDEX idx_track_name_trgm ON songs USING GIN (track_name gin_trgm_ops)
 ```
 
 ```bash
-CREATE UNIQUE INDEX songs_pkey ON songs USING btree (_id)
-```
-
-```bash
 CREATE INDEX idx_acousticness ON songs USING btree (acousticness)
 ```
 
