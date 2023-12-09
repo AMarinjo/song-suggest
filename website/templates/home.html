@@ -20,11 +20,20 @@
           <tr>
               <th>Track Name</th>
               <th>Artist Name</th>
+              <th>Album Name</th>
+              <th>Select</th>
           </tr>
           {% for result in results %}
               <tr>
                   <td>{{ result[0] }}</td>
                   <td>{{ result[1] }}</td>
+                  <td>{{ result[2] }}</td>
+                  <td>
+                    <form method="GET" action="{{ url_for('views.getRecs') }}">
+                      <input type="hidden" name="selected_track" value="{{ result[0] }} | {{ result[1] }} | {{ result[2] }}">
+                      <button type="submit" class="btn btn-success">Get Recommendations</button>
+                    </form>
+                  </td>
               </tr>
           {% endfor %}
         </table>

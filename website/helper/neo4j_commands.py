@@ -53,7 +53,7 @@ def create_artist(csv_file_path):
 
     artist = f"""
         LOAD CSV WITH HEADERS FROM 'file:///{csv_file_path}' AS row
-        UNWIND row.artists AS artist
+        UNWIND split(row.artists,';') AS artist
         WITH DISTINCT artist
         CREATE (:Artist {{name:artist}})
         """
@@ -158,3 +158,8 @@ def check_node_available(label, neo_property):
     )
 
     return table_available
+
+def recs(song):
+    """
+    
+    """

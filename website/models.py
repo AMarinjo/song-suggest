@@ -120,14 +120,14 @@ class PostgresModel:
         cursor = self.connection.cursor()
 
         cursor.execute(
-            "SELECT track_name, artists FROM songs WHERE track_name ILIKE %s",
+            "SELECT track_name, artists, album_name FROM songs WHERE track_name ILIKE %s",
             ("%" + search_value + "%",),
         )
         results = cursor.fetchall()
         cursor.close()
 
         return results
-
+    
     def close(self):
         """Closes the Postgres database connection"""
         self.connection.close()

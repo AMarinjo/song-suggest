@@ -55,3 +55,4 @@ def check_table_available(table_name):
     """
 
     return table_available
+

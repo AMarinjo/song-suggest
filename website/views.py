@@ -38,3 +38,24 @@ def search():
         return render_template("home.html", results=results, query=query)
     else:
         return render_template("home.html", message="Please enter a search query.")
+
+@views.route("/getRecs")
+def getRecs():
+    """Used for giving song recommendations based on the song, artist, and album selected from the search menu. Searches Neo4j
+    
+    Returns:
+        Render of recommendations template
+    """
+    song_info = request.args.get("selected_track")
+
+    if song_info:
+        info_split = song_info.split('|')
+        song_name = info_split[0].strip()
+        song_artist = info_split[1].strip()
+        song_album = info_split[2].strip()
+
+        recommendations = 'neo query'
+        
+        return render_template("home.html", recommendations=recommendations)
+    else:
+        return render_template("error.html",message="Invalid request.")
