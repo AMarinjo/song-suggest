@@ -1,34 +1,40 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} 
-    {% block content%}
-    <h1 align="center">SongSuggest</h1>
-    <ul class="list-group list-group-flush" id="notes">
-    </ul>
-    <br>
-    <form method="GET" action="{{ url_for('views.search') }}">
-      <div align="center">
-      <label for="query">Search:</label>
-      <input type="text" id="query" name="query" required>
-      </div>
-      <div align="center">
-        <button type="submit" class="btn btn-primary">Search</button>
+{% block content%}
+  <br><br><br><br>
+  <img id="mainLogo" src="https://fontmeme.com/permalink/231208/7442c7e10617a4b15df5baeda2ad201f.png" alt="Logo" style="width: auto; height: auto; margin-bottom: 1rem;">
+  <ul class="list-group list-group-flush" id="notes">
+  </ul>
+  <div class="wrapper">
+    <div class="label">Submit your search</div>
+    <form id="searchForm" method="POST" action="/search">
+      <div class="searchBar">
+        <div class="autocomplete">
+          <input id="searchQueryInput" type="text" name="query" placeholder="Search" value="{{ query }}" autocomplete="off">
+        </div>
+        <button id="searchQuerySubmit" type="submit">
+            <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                <path fill="#666666" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+            </svg>
+        </button>
       </div>
     </form>
+  </div>
 
-    {% if results %}
-        <h3>Search Results for "{{ query }}"</h2>
-        <table>
-          <tr>
-              <th>Track Name</th>
-              <th>Artist Name</th>
-          </tr>
-          {% for result in results %}
-              <tr>
-                  <td>{{ result[0] }}</td>
-                  <td>{{ result[1] }}</td>
-              </tr>
-          {% endfor %}
-        </table>
-    {% elif query %}
-        <p>No results found for "{{ query }}".</p>
-    {% endif %}
-    {% endblock %}
+  {% if results %}
+      <h3>Search Results for "{{ query }}"</h3>
+      <table>
+        <tr>
+            <th>Track Name</th>
+            <th>Artist Name</th>
+        </tr>
+        {% for result in results %}
+            <tr>
+                <td>{{ result[0] }}</td>
+                <td>{{ result[1] }}</td>
+            </tr>
+        {% endfor %}
+      </table>
+  {% elif query %}
+      <p>No results found for "{{ query }}".</p>
+  {% endif %}
+{% endblock %}
