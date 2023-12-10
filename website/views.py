@@ -66,8 +66,14 @@ def redirect_page(suggestion):
     """
     postgres = PostgresModel()
     results_post = postgres.find_by_id(suggestion)
+    similar = postgres.find_recommendations(suggestion)
+    artist_songs = postgres.find_by_artist(results_post[0], results_post[2])
     postgres.close()
-    print(results_post)
     results_neo = ""
 
-    return render_template(f"profile.html", results_post=results_post[0])
+    return render_template(
+        f"profile.html",
+        results_post=results_post,
+        artist_songs=artist_songs,
+        similar_tracks=similar,
+    )

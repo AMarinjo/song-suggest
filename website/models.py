@@ -195,12 +195,80 @@ class PostgresModel:
             table_name (str, optional): The name of the table created. Defaults
             to "songs".
         """
-        result = ""
+        result = []
 
         try:
             cursor = self.connection.cursor()
 
             cursor.execute(find_by_id(table_name, id))
+            query_result = cursor.fetchall()
+            temp = query_result[0]
+            print(temp)
+
+            result.append(temp[0])  # track_id
+            result.append(temp[1])  # track_name
+            result.append(temp[2])  # artists
+            result.append(temp[3])  # album_name
+            result.append(temp[4])  # track_genre
+            result.append(color_code_popularity(temp[5]))  # popularity
+            min, sec = divmod(temp[6] / 1000, 60)
+            min, sec = int(min), int(sec)
+            result.append(min)  # duration_minutes
+            result.append(sec)  # duration_remaining_seconds
+            if temp[7]:  # explicit?
+                result.append("Yes")
+            else:
+                result.append("No")
+
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+
+        finally:
+            if cursor is not None:
+                cursor.close()
+
+        return result
+
+    def find_recommendations(self, id, table_name="songs"):
+        """Method for searching the postgres database and finding the recommendations
+
+        Args:
+            id (str): Id searched for in database
+            table_name (str, optional): The name of the table created. Defaults
+            to "songs".
+        """
+        result = ""
+
+        try:
+            cursor = self.connection.cursor()
+
+            cursor.execute(find_recommendations(table_name, id))
+            result = cursor.fetchall()
+
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+
+        finally:
+            if cursor is not None:
+                cursor.close()
+
+        return result
+
+    def find_by_artist(self, id, artist, table_name="songs"):
+        """Method for searching the postgres database by artist
+
+        Args:
+            id (str): Id searched for in database
+            artist (str): Artist name to be searched for in database
+            table_name (str, optional): The name of the table created. Defaults
+            to "songs".
+        """
+        result = []
+
+        try:
+            cursor = self.connection.cursor()
+
+            cursor.execute(find_by_artist(table_name, id, artist))
             result = cursor.fetchall()
 
         except (Exception, psycopg2.DatabaseError) as error:

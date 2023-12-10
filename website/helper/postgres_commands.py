@@ -100,7 +100,7 @@ def find_list_query(table_name):
     """
 
     find_list = f"""
-        SELECT track_id, track_name || ' - ' || artists AS track_and_artists, album_name, track_genre 
+        SELECT track_id, track_name || ' - ' || artists AS track_and_artists, album_name, track_genre
         FROM {table_name} 
         WHERE track_name ILIKE %s OR artists ILIKE %s
         ORDER BY 
@@ -120,9 +120,56 @@ def find_by_id(table_name, search_id):
     """
 
     search_query = f"""
-        SELECT track_id, track_name, artists, album_name, track_genre 
+        SELECT track_id, track_name, artists, album_name, track_genre, popularity, duration_ms, explicit 
         FROM {table_name} 
         WHERE track_id = '{search_id}'
+    """
+
+    return search_query
+
+
+def find_recommendations(table_name, search_id):
+    """Simple method to search database by id, returns recomendations
+
+    Args:
+        table_name (str): Table name used within database
+        search_id (str): Id that needs to be searched by
+    """
+
+    search_query = f"""
+        SELECT DISTINCT suggestion.track_id, suggestion.track_name
+        FROM {table_name} suggestion
+        JOIN {table_name} original ON suggestion.track_id <> original.track_id
+        WHERE original.track_id = '{search_id}'
+        AND ABS(suggestion.danceability - original.danceability) <= 0.2
+        AND ABS(suggestion.liveness - original.liveness) <= 0.2
+        AND ABS(suggestion.valence - original.valence) <= 0.2
+        AND ABS(ABS(suggestion.loudness) - ABS(original.loudness)) <= 2
+        AND ABS(suggestion.energy - original.energy) <= 0.2
+        AND ABS(suggestion.speechiness - original.speechiness) <= 0.2
+        AND ABS(suggestion.acousticness - original.acousticness) <= 0.2
+        AND suggestion.track_genre = original.track_genre
+        ORDER BY suggestion.track_name
+        LIMIT 5
+    """
+
+    return search_query
+
+
+def find_by_artist(table_name, search_id, artist):
+    """Simple method to search database by artist
+
+    Args:
+        table_name (str): Table name used within database
+        search_id (str): Id that needs to be searched by
+        artist (str): Search by specific artist
+    """
+
+    search_query = f"""
+        SELECT track_id, track_name, artists
+        FROM {table_name}
+        WHERE artists = '{artist}' AND track_id <> '{search_id}'
+        LIMIT 5;
     """
 
     return search_query
@@ -141,3 +188,16 @@ def tempo(table_name, danceability, liveness):
     tempo += f" {danceability}) + ABS(liveness-{liveness}) LIMIT 5;"
 
     return tempo
+
+
+def color_code_popularity(popularity):
+    """Gives a color code based on song popularity
+
+    Args:
+        popularity (int): Value between 0 and 100
+    """
+    if popularity >= 80:
+        return "green"  # High popularity
+    if 60 <= popularity < 80:
+        return "yellow"  # Medium popularity
+    return "red"  # Low popularity
