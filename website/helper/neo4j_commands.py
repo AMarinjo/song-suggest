@@ -167,18 +167,18 @@ def recommendations(id):
         id (str): Id that is searched within the database
     """
 
-    query = f"""MATCH (selectedTrack:Song {{track_id: '{id}'}})
+    query = f"""MATCH (selectedTrack:Track {{trackId: '{id}'}})
         WITH selectedTrack
         MATCH (selectedTrack)-[:IN_GENRE]->(selectedGenre:Genre)
         WITH selectedTrack, selectedGenre
-        MATCH (similarTrack:Song)-[:IN_GENRE]->(selectedGenre)
+        MATCH (similarTrack:Track)-[:IN_GENRE]->(selectedGenre)
         WHERE similarTrack <> selectedTrack
-        RETURN similarTrack.track_id AS trackId,
-            similarTrack.track_name AS trackName,
-            similarTrack.artists AS trackArtist,
-            similarTrack.album_name AS trackAlbum,
-            COUNT(DISTINCT selectedGenre) AS genreOverlap
+        WITH similarTrack, COLLECT(similarTrack.artist) AS artists, COUNT(DISTINCT selectedGenre) AS genreOverlap
+        WITH similarTrack, artists, genreOverlap
         ORDER BY genreOverlap DESC, rand()
-        LIMIT 10;"""
+        WITH similarTrack, artists[0] AS trackArtist, genreOverlap
+        LIMIT 10
+        RETURN similarTrack.name AS trackName, trackArtist, similarTrack.album AS trackAlbum, genreOverlap;
+        """
 
     return query
