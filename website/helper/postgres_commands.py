@@ -136,42 +136,23 @@ def find_recommendations(table_name, search_id):
         search_id (str): Id that needs to be searched by
     """
 
-##    search_query = f"""
- ##       SELECT DISTINCT suggestion.track_id, suggestion.track_name
- ##       FROM {table_name} suggestion
- ##      WHERE original.track_id = '{search_id}'
-  ##      AND ABS(suggestion.danceability - original.danceability) <= 0.2
-  ##      AND ABS(suggestion.liveness - original.liveness) <= 0.2
-  ##      AND ABS(suggestion.valence - original.valence) <= 0.2
- ##       AND ABS(ABS(suggestion.loudness) - ABS(original.loudness)) <= 2
- ##       AND ABS(suggestion.energy - original.energy) <= 0.2
- ##       AND ABS(suggestion.speechiness - original.speechiness) <= 0.2
- ##       AND ABS(suggestion.acousticness - original.acousticness) <= 0.2
- ##       AND suggestion.track_genre = original.track_genre
- ##       ORDER BY suggestion.track_name
- ##       LIMIT 5
-  ##  """
-
     search_query = f"""
-        SELECT track_name
-        FROM (
-        SELECT DISTINCT suggestion.track_name, RANDOM() as random_order
+        SELECT DISTINCT suggestion.track_id, suggestion.track_name
         FROM {table_name} suggestion
-        JOIN {table_name} original ON suggestion.track_id <> original.track_id
-        WHERE
-            riginal.track_id = '{search_id}'
-            AND ABS(suggestion.danceability - original.danceability) <= 0.3
-            AND ABS(suggestion.liveness - original.liveness) <= 0.3
-            AND ABS(suggestion.valence - original.valence) <= 0.3
-            AND ABS(ABS(suggestion.loudness) - ABS(original.loudness)) <= 2
-            AND ABS(suggestion.energy - original.energy) <= 0.3
-            AND ABS(suggestion.speechiness - original.speechiness) <= 0.05
-            AND ABS(suggestion.acousticness - original.acousticness) <= 0.3
-            AND suggestion.track_genre = original.track_genre
-        ) AS subquery
-        ORDER BY random_order
-        LIMIT 5;
+        WHERE original.track_id = '{search_id}'
+        AND ABS(suggestion.danceability - original.danceability) <= 0.2
+        AND ABS(suggestion.liveness - original.liveness) <= 0.2
+        AND ABS(suggestion.valence - original.valence) <= 0.2
+        AND ABS(ABS(suggestion.loudness) - ABS(original.loudness)) <= 2
+        AND ABS(suggestion.energy - original.energy) <= 0.2
+        AND ABS(suggestion.speechiness - original.speechiness) <= 0.2
+        AND ABS(suggestion.acousticness - original.acousticness) <= 0.2
+        AND suggestion.track_genre = original.track_genre
+        ORDER BY suggestion.track_name
+        LIMIT 5
     """
+
+ 
 
     return search_query
 
