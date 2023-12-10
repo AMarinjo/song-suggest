@@ -158,21 +158,27 @@ def check_node_available(label, neo_property):
     )
 
     return table_available
+
+
 def recommendations(id):
-    query = (
-        f"""MATCH (selectedTrack:Track {{trackId: '{id}'}})
+    """Query for getting recomendations for a specific song selected
+
+    Args:
+        id (str): Id that is searched within the database
+    """
+
+    query = f"""MATCH (selectedTrack:Song {{track_id: '{id}'}})
         WITH selectedTrack
         MATCH (selectedTrack)-[:IN_GENRE]->(selectedGenre:Genre)
         WITH selectedTrack, selectedGenre
-        MATCH (similarTrack:Track)-[:IN_GENRE]->(selectedGenre)
+        MATCH (similarTrack:Song)-[:IN_GENRE]->(selectedGenre)
         WHERE similarTrack <> selectedTrack
-        RETURN similarTrack.name AS trackName,
-            similarTrack.artist AS trackArtist,
-            similarTrack.album AS trackAlbum,
+        RETURN similarTrack.track_id AS trackId,
+            similarTrack.track_name AS trackName,
+            similarTrack.artists AS trackArtist,
+            similarTrack.album_name AS trackAlbum,
             COUNT(DISTINCT selectedGenre) AS genreOverlap
         ORDER BY genreOverlap DESC, rand()
         LIMIT 10;"""
-)
-    
-    return query 
 
+    return query

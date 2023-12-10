@@ -62,19 +62,6 @@
             {% endif %}
         </div>
         <div class="profile-footer">
-            <h4>Genre Recommendation:</h4>
-            <br>
-            {% if artist_songs %}
-                <p>
-                    {% for song in artist_songs %}
-                        <a href="/redirect/{{ song[0] }}">{{ song[1] }}</a>&emsp;&emsp;
-                    {% endfor %}
-                </p>
-            {% else %}
-                <p>No further songs found.</p>
-            {% endif %}
-        </div>
-        <div class="profile-footer">
             <h4>We also recommend the following songs:</h4>
             <table>
                 <thead>
@@ -87,7 +74,7 @@
                 <tbody>
                     {% for recommendation in results_neo %}
                         <tr>
-                            <td>{{ recommendation['trackName'] }}</td>
+                            <td><a href="/redirect/{{ recommendation['trackId'] }}">{{ recommendation['trackName'] }}</a></td>
                             <td>{{ recommendation['trackArtist'] }}</td>
                             <td>{{ recommendation['trackAlbum'] }}</td>
                         </tr>
