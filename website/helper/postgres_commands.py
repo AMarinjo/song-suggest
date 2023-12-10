@@ -154,8 +154,6 @@ def find_recommendations(table_name, search_id):
         LIMIT 5
     """
 
- 
-
     return search_query
 
 

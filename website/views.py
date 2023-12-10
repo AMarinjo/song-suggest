@@ -72,12 +72,12 @@ def redirect_page(suggestion):
     postgres.close()
     neo = Neo4jModel()
     results_neo = neo.recommendations(suggestion)
-    neo.close()  
+    neo.close()
 
     return render_template(
         f"profile.html",
         results_post=results_post,
         artist_songs=artist_songs,
         similar_tracks=similar,
-        results_neo=results_neo
+        results_neo=results_neo,
     )
