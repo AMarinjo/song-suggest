@@ -74,5 +74,26 @@
                 <p>No further songs found.</p>
             {% endif %}
         </div>
+        <div class="profile-footer">
+            <h4>We also recommend the following songs:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Track Name</th>
+                        <th>Artist</th>
+                        <th>Album</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for recommendation in results_neo %}
+                        <tr>
+                            <td>{{ recommendation['trackName'] }}</td>
+                            <td>{{ recommendation['trackArtist'] }}</td>
+                            <td>{{ recommendation['trackAlbum'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}
