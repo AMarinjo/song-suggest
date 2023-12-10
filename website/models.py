@@ -203,7 +203,6 @@ class PostgresModel:
             cursor.execute(find_by_id(table_name, id))
             query_result = cursor.fetchall()
             temp = query_result[0]
-            print(temp)
 
             result.append(temp[0])  # track_id
             result.append(temp[1])  # track_name
