@@ -158,8 +158,3 @@ def check_node_available(label, neo_property):
     )
 
     return table_available
-
-def recs(song):
-    """
-    
-    """
