@@ -137,9 +137,11 @@ def find_recommendations(table_name, search_id):
     """
 
     search_query = f"""
-        SELECT DISTINCT suggestion.track_id, suggestion.track_name
+        SELECT DISTINCT suggestion.track_id, suggestion.track_name, RANDOM() as random
         FROM {table_name} suggestion
-        WHERE original.track_id = '{search_id}'
+        JOIN {table_name} original ON suggestion.track_id <> original.track_id
+        WHERE 
+        original.track_id = '{search_id}'
         AND ABS(suggestion.danceability - original.danceability) <= 0.2
         AND ABS(suggestion.liveness - original.liveness) <= 0.2
         AND ABS(suggestion.valence - original.valence) <= 0.2
@@ -148,7 +150,7 @@ def find_recommendations(table_name, search_id):
         AND ABS(suggestion.speechiness - original.speechiness) <= 0.2
         AND ABS(suggestion.acousticness - original.acousticness) <= 0.2
         AND suggestion.track_genre = original.track_genre
-        ORDER BY suggestion.track_name
+        ORDER BY random
         LIMIT 5
     """
 
