@@ -14,54 +14,37 @@
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
       crossorigin="anonymous"
     />
-    <style>
-      table {
-          border-collapse: collapse;
-          width: 100%;
-          margin-top: 20px;
-      }
-      th, td {
-          border: 1px solid #dddddd;
-          text-align: left;
-          padding: 4px;
-      }
-      th {
-          background-color: #f2f2f2;
-      }
-    </style>
+    <link href="../static/style.css" rel="stylesheet" type="text/css">
     <title>{% block title %}Home{% endblock %}</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbar"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      {% block navbar %} {% endblock %}
     </nav>
 
     <div class="container">{% block content %} {% endblock %}</div>
+    <div class="container1">{% block content1 %} {% endblock %}</div>
+    {% block content2 %} {% endblock %}
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script>
+      crossorigin="anonymous">
+    </script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-      crossorigin="anonymous"
-    ></script>
+      crossorigin="anonymous">
+    </script>
     <script
       src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-      crossorigin="anonymous"
-    ></script>
+      crossorigin="anonymous">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js">
+    </script>
+    <script src="../static/dropdown.js" type="text/javascript"></script>
+  {% block javascript %}
 
-{% block javascript %}
-
-{% endblock %}
+  {% endblock %}
   </body>
 </html>

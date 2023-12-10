@@ -61,7 +61,8 @@ python main.py
 Go to `http://127.0.0.1:8001`
 
 ## Improvements
-Consider running these two commands in your Postgres database to potentially improve the search performance:
+Consider running these two commands in your Postgres database to potentially improve the 
+search performance:
 
 ```bash
 CREATE INDEX idx_artists_trgm ON songs USING GIN (artists gin_trgm_ops)
@@ -69,4 +70,32 @@ CREATE INDEX idx_artists_trgm ON songs USING GIN (artists gin_trgm_ops)
 
 ```bash
 CREATE INDEX idx_track_name_trgm ON songs USING GIN (track_name gin_trgm_ops)
+```
+
+```bash
+CREATE INDEX idx_acousticness ON songs USING btree (acousticness)
+```
+
+```bash
+CREATE INDEX idx_danceability ON songs USING btree (danceability)
+```
+
+```bash
+CREATE INDEX idx_liveness ON songs USING btree (liveness)
+```
+
+```bash
+CREATE INDEX idx_songid ON songs USING btree (track_id)
+```
+
+Consider modifying the dataset manually. For some reason, the dataset imported comes
+with duplicate entries. Run the below-shown commands to remove the duplicate entries.
+
+```bash
+CREATE TABLE temp AS
+SELECT DISTINCT ON (track_id) * FROM songs;
+
+DROP TABLE songs;
+
+ALTER TABLE temp RENAME TO songs;
 ```

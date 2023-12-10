@@ -19,43 +19,62 @@ def homepage():
     return render_template("home.html")
 
 
-@views.route("/search")
+@views.route("/search", methods=["GET", "POST"])
 def search():
     """Used for searching the database. Searches postgres database specifically
 
     Returns:
         Render of the search template
     """
+    if request.method == "POST":
+        query = request.form.get("query")
+
+        if query:
+            postgres = PostgresModel()
+            results = postgres.find_list(query)
+            postgres.close()
+            return render_template("find.html", results=results, query=query)
+
+        return render_template("home.html")
+
     query = request.args.get("query")
 
     if query:
         postgres = PostgresModel()
-
         results = postgres.search(query)
-
         postgres.close()
 
-        return render_template("home.html", results=results, query=query)
-    else:
-        return render_template("home.html", message="Please enter a search query.")
+        suggestions = [
+            {
+                "track_id": result[0],
+                "track_name": result[1],
+                "redirect_url": f"/redirect/{result[0]}",
+            }
+            for result in results
+        ]
+        return jsonify({"suggestions": suggestions})
 
-@views.route("/getRecs")
-def getRecs():
-    """Used for giving song recommendations based on the song, artist, and album selected from the search menu. Searches Neo4j
-    
+
+@views.route("/redirect/<suggestion>")
+def redirect_page(suggestion):
+    """Render a page based on the selected suggestion.
+
+    Args:
+        suggestion (str): The selected suggestion.
     Returns:
-        Render of recommendations template
+        Render of a template specific to the selected suggestion.
     """
-    song_info = request.args.get("selected_track")
+    postgres = PostgresModel()
+    results_post = postgres.find_by_id(suggestion)
+    similar = postgres.find_recommendations(suggestion)
+    artist_songs = postgres.find_by_artist(results_post[0], results_post[2])
+    postgres.close()
+    results_neo = ""
 
-    if song_info:
-        info_split = song_info.split('|')
-        song_name = info_split[0].strip()
-        song_artist = info_split[1].strip()
-        song_album = info_split[2].strip()
+    return render_template(
+        f"profile.html",
+        results_post=results_post,
+        artist_songs=artist_songs,
+        similar_tracks=similar,
+    )
 
-        recommendations = 'neo query'
-        
-        return render_template("home.html", recommendations=recommendations)
-    else:
-        return render_template("error.html",message="Invalid request.")
