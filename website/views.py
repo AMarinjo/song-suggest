@@ -5,6 +5,7 @@ GROUP 12 Project
 """
 from flask import Blueprint, render_template, request, flash, jsonify
 from .models import PostgresModel
+from .models import Neo4jModel
 
 views = Blueprint("views", __name__)
 
@@ -66,15 +67,11 @@ def redirect_page(suggestion):
     """
     postgres = PostgresModel()
     results_post = postgres.find_by_id(suggestion)
-    similar = postgres.find_recommendations(suggestion)
-    artist_songs = postgres.find_by_artist(results_post[0], results_post[2])
     postgres.close()
-    results_neo = ""
+    print(results_post)
 
-    return render_template(
-        f"profile.html",
-        results_post=results_post,
-        artist_songs=artist_songs,
-        similar_tracks=similar,
-    )
+    neo = Neo4jModel()
+    results_neo = neo.recommendations(suggestion)
+    neo.close()  
 
+    return render_template(f"profile.html", results_post=results_post[0], results_neo=results_neo)
