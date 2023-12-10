@@ -65,6 +65,14 @@ class Neo4jModel:
                 session.run(create_artist_song())
                 session.run(create_song_genre())
 
+    def recommendations(self,id):
+          with self.driver.session() as session:
+            result = session.run(
+                recommendations(id)
+            )
+            result_data = list(result.data())  
+            return result_data
+            
     def close(self):
         """Closes the Neo4j database connection"""
         self.driver.close()
